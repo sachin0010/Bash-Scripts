@@ -1,0 +1,4 @@
+#!/bin/bash
+# This script backs up the /home/user directory to /backup
+tar -czf /backup/user_backup.tar.gz /home/user
+echo "Backup completed!"
