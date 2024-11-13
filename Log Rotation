@@ -1,0 +1,27 @@
+#!/bin/bash
+ 
+# Variables
+LOG_FILE="/var/log/myapp.log"       # Path to your log file
+ROTATED_LOGS_DIR="/var/log/myapp/"  # Directory for rotated logs
+DAYS_TO_KEEP=30                      # Days to keep old logs
+ 
+# Create rotated logs directory if it doesn't exist
+mkdir -p "$ROTATED_LOGS_DIR"
+ 
+# Rotate logs
+if [ -f "$LOG_FILE" ]; then
+    # Get the current timestamp
+    TIMESTAMP=$(date +'%Y%m%d_%H%M%S')
+ 
+    # Move and compress the log file
+    mv "$LOG_FILE" "$ROTATED_LOGS_DIR/myapp_$TIMESTAMP.log"
+    gzip "$ROTATED_LOGS_DIR/myapp_$TIMESTAMP.log"
+ 
+    echo "Log file rotated: myapp_$TIMESTAMP.log.gz"
+ 
+    # Remove old logs
+    find "$ROTATED_LOGS_DIR" -name "myapp_*.log.gz" -mtime +$DAYS_TO_KEEP -exec rm {} \;
+ 
+else
+    echo "Log file $LOG_FILE does not exist."
+fi
